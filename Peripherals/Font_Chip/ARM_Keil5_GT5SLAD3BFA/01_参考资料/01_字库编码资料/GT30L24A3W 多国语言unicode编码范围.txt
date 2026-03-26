@@ -1,0 +1,118 @@
+/* ---------------------------------------------------------------------------------------------------- *\
+ * @brief 字符集
+ * ---------------------------------------------------------------------------------------------------- */
+【一】 ASCII码编码范围:  //ASCII_GetData()
+        0x20 ~ 0x7F
+
+
+【二】 shift-jis  unicode编码范围: //Shift_Jis_xx_GetData()
+        0xFF61UL <= unicode <= 0xFF9FUL
+
+
+【三】 拉丁文unicode编码范围:  //LATIN_xx_GetData()
+        (1) 0x0020UL <= unicode <= 0x007FUL
+        (2) 0x00A0UL <= unicode <= 0x017FUL
+        (3) 0x01A0UL <= unicode <= 0x01CFUL
+        (4) 0x01F0UL <= unicode <= 0x01FFUL
+        (5) 0x0210UL <= unicode <= 0x021FUL
+        (6) 0x1EA0UL <= unicode <= 0x1EFFUL
+
+
+【四】 西里尔文unicode编码范围:  //CYRILLIC_xx_GetData()
+        (1) 0x0400UL <= unicode <= 0x045FUL
+        (2) 0x0490UL <= unicode <= 0x04FFUL
+
+
+【五】 希腊文unicode编码范围:  //GREECE_xx_GetData()
+        0x0370UL <= unicode <= 0x03CFUL
+
+
+【六】 希伯来文unicode编码范围:  //HEBREW_xx_GetData()
+        (1) 0x0590UL <= unicode <= 0x05FFUL
+        (2) 0xFB1DUL <= unicode <= 0xFB4FUL
+
+
+【七】 阿拉伯文unicode编码范围:   //ALB_xx_GetData()
+        (1) 0x0600UL <= unicode <= 0x06FFUL
+        (2) 0xfb50UL <= unicode <= 0xfbffUL
+        (3) 0xfe70UL <= unicode <= 0xfeffUL
+
+
+【八】 泰文unicode编码范围:  //THAILAND_xx_GetData()
+        0x0E00UL <= unicode <= 0x0E5FUL
+
+
+【九】 天城体（印地文）unicode编码范围:  //Indic_xx_GetData()
+        0x0900UL <= unicode <= 0x09FFUL
+
+
+【十】 高棉文（柬埔寨文）unicode编码范围:  //Khmer_xx_GetData()
+        (1) Unicode >= 0x1780UL  &&  Unicode <= 0x17DDUL
+        (2) Unicode >= 0x17E0UL  &&  Unicode <= 0x17E9UL
+        (3) Unicode >= 0x17F0UL  &&  Unicode <= 0x17F9UL
+        (4) Unicode >= 0x19e0UL  &&  Unicode <= 0x19EFUL
+        (5) Unicode >= 0x19F0UL  &&  Unicode <= 0x19FFUL
+
+
+
+/* ---------------------------------------------------------------------------------------------------- *\
+ * @brief 转码表
+ * ---------------------------------------------------------------------------------------------------- */
+【一】 繁体BIG5编码 转 GBK 编码范围:  //BIG52GBK()
+        高字节从0xA1到0xF9; 低字节从0x40到0x7E 和 0xA1到0xFE
+
+
+【二】 unicode 转 中文 GBK 编码范围:  //U2G()
+        (1) unicode <= 0x0451UL && unicode >= 0x00a0UL
+        (2) unicode <= 0x2642UL && unicode >= 0x2010UL
+        (3) unicode <= 0x33d5UL && unicode >= 0x3000UL
+        (4) unicode <= 0x9fa5UL && unicode >= 0x4e00UL
+        (5) unicode <= 0xfe6bUL && unicode >= 0xfe30UL
+        (6) unicode <= 0xff5eUL && unicode >= 0xff01UL
+        (7) unicode <= 0xffe5UL && unicode >= 0xffe0UL
+        (8) unicode <= 0xFA29UL && unicode >= 0xF92CUL
+        (9) unicode <= 0xE864UL && unicode >= 0xE816UL
+        (10) unicode <= 0x2ECAUL && unicode >= 0x2E81UL
+        (11) unicode <= 0x49B7UL && unicode >= 0x4947UL
+        (12) unicode <= 0x4DAEUL && unicode >= 0x4C77UL
+        (13) unicode <= 0x3CE0UL && unicode >= 0x3447UL
+        (14) unicode <= 0x478DUL && unicode >= 0x4056UL
+        (15) unicode == 0x1E3fUL
+        (16) unicode == 0xE796UL
+        (17) unicode <= 0x2FFBUL && unicode >= 0x2FF0UL
+        (18) unicode <= 0xE793UL && unicode >= 0xE78DUL
+        (19) unicode <= 0xE795UL && unicode >= 0xE794UL
+
+
+【三】 unicode 转 日文 JIS0208 编码范围:   //U2J()
+        (1) Unicode < 0x07ffUL  &&  Unicode >= 0x0020UL
+        (2) Unicode < 0x27ffUL  &&  Unicode >= 0x2000UL
+        (3) Unicode < 0x30ffUL  &&  Unicode >= 0x3000UL
+        (4) Unicode < 0x33ffUL  &&  Unicode >= 0x3200UL
+        (5) Unicode < 0x9fffUL  &&  Unicode >= 0x4e00UL
+        (6) Unicode <= 0x2B07UL  &&  Unicode >= 0x2B05UL
+        (7) Unicode < 0x2B05UL || Unicode > 0x2B07UL
+
+
+【四】 Shift–JIS 转 日文 JIS0208 编码范围:   //SJIS2JIS()
+        (1) Code16 >= 0x8140UL  &&  Code16 < 0x8740UL
+        (2) Code16 >= 0xE040UL  &&  Code16 <= 0xEAA4UL
+        (3) Code16 >= 0x8740UL  &&  Code16 <= 0x879CUL
+        (4) Code16 > 0x879CUL   &&  Code16 <= 0x9FFCUL
+        (5) Code16 >= 0xeeefUL  &&  Code16 <= 0xeef8UL
+        (6) Code16 >= 0xfa40UL  &&  Code16 <= 0xfa49UL
+        (7) Code16 >= 0xfa4aUL  &&  Code16 <= 0xfa53UL
+        (8) Code16 == 0xfa58UL
+        (9) Code16 == 0xfa59UL
+        (10) Code16 == 0xfa5aUL
+        (11) Code16 == 0xfa5bUL
+
+
+【五】 unicode 转 韩文 KSC5601 编码范围:   //U2K()
+        (1) Unicode <= 0x0451UL  &&  Unicode >= 0x00a1UL
+        (2) Unicode <= 0x266dUL  &&  Unicode >= 0x2015UL
+        (3) Unicode <= 0x33ddUL  &&  Unicode >= 0x3000UL
+        (4) Unicode <= 0xd79dUL  &&  Unicode >= 0xac00UL
+        (5) Unicode <= 0xffffUL  &&  Unicode >= 0xf900UL
+
+

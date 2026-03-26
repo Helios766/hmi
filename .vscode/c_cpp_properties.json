@@ -1,0 +1,24 @@
+{ 
+    "configurations": [ 
+        { 
+            "name": "Win32", 
+            "includePath": [ 
+                "${workspaceFolder}/**", 
+                "C:/Keil_v5/ARM/INC", 
+                "C:/Keil_v5/ARM/PACK/Keil/STM32F1xx_DFP/2.3.0/Include", 
+                "C:/Keil_v5/ARM/PACK/Keil/STM32F1xx_DFP/2.3.0/Source/Templates", 
+                "C:/Keil_v5/ARM/PACK/Keil/STM32F1xx_DFP/2.3.0/Source/Templates/gcc" 
+            ], 
+            "defines": [ 
+                "_DEBUG", 
+                "UNICODE", 
+                "_UNICODE" 
+            ], 
+            "compilerPath": "C:/Keil_v5/ARM/ARMCC/bin/armcc.exe", 
+            "cStandard": "c11", 
+            "cppStandard": "c++17", 
+            "intelliSenseMode": "msvc-x64" 
+        } 
+    ], 
+    "version": 4 
+} 

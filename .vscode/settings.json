@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "bsp_spi_flash.h": "c",
+        "usart.h": "c",
+        "main.h": "c",
+        "stm32h7xx_hal.h": "c",
+        "rgb565_lcd.h": "c",
+        "dma2d.h": "c",
+        "ltdc.h": "c"
+    },
+    "clang.cflags":[
+    "${workspaceRoot}"
+    ],
+    "idf.pythonInstallPath": "C:\\Users\\iemx0\\.espressif\\tools\\idf-python\\3.11.2\\python.exe"
+}

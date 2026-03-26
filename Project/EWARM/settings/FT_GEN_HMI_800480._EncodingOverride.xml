@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<userOverrides>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\GD32标准库\V1.00\FatFS\diskio.c</path>
+        <encoding>System</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\GD32标准库\V1.00\FreeRTOS\FreeRTOSConfig.h</path>
+        <encoding>UTF-8</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\GD32标准库\V1.00\Hardware\RGB_LCD\bsp_lcd.c</path>
+        <encoding>UTF-8</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\GD32标准库\V1.00\Hardware\Touch_Pad\bsp_i2c.c</path>
+        <encoding>UTF-8</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\GD32标准库\V1.00\Hardware\Touch_Pad\bsp_i2c.h</path>
+        <encoding>UTF-8</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\GD32标准库\V1.00\Hardware\Touch_Pad\bsp_touch_gtxx.c</path>
+        <encoding>UTF-8</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\GD32标准库\V1.00\Hardware\Touch_Pad\bsp_touch_gtxx.h</path>
+        <encoding>UTF-8</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\GD32标准库\V1.00\Hardware\USART\bsp_usart.c</path>
+        <encoding>UTF-8</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\GD32标准库\V1.00\LVGL\Ports\lv_port_disp.c</path>
+        <encoding>UTF-8</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\GD32标准库\V1.00\LVGL\Ports\lv_port_indev.c</path>
+        <encoding>System</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\GD32标准库\V1.00\User\rx_ring_queue\rx_ring_queue.c</path>
+        <encoding>System</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\V1.00\FatFS\diskio.c</path>
+        <encoding>System</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\V1.00\FreeRTOS\Config\FreeRTOSConfig.h</path>
+        <encoding>System</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\V1.00\Hardware\RGB_LCD\bsp_lcd.c</path>
+        <encoding>System</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\V1.00\Hardware\SDRAM\bsp_sdram.c</path>
+        <encoding>System</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\V1.00\Hardware\SDRAM\bsp_sdram.h</path>
+        <encoding>System</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\V1.00\Hardware\SPI_FLASH\bsp_spi_flash.c</path>
+        <encoding>System</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\V1.00\Hardware\SPI_FLASH\bsp_spi_flash.h</path>
+        <encoding>System</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\V1.00\LVGL\Ports\lv_port_disp.c</path>
+        <encoding>System</encoding>
+    </override>
+    <override>
+        <path>D:\Faith\Project\Other Project\FT_GEN_HMI_800480\Soft_embed\V1.00\LVGL\Ports\lv_port_fs.c</path>
+        <encoding>System</encoding>
+    </override>
+</userOverrides>

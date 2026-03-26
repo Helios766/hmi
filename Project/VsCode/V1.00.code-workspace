@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"bsp_usart.h": "c",
+			"gd32f4xx.h": "c",
+			"bsp_touch_gtxx.h": "c",
+			"lv_port_disp.h": "c",
+			"port.h": "c",
+			"modbus_crc.h": "c",
+			"main.h": "c",
+			"modbus_master.h": "c",
+			"datapull.h": "c",
+			"bsp_systick.h": "c",
+			"bsp_i2c.h": "c",
+			"gui.h": "c",
+			"gui_support.h": "c",
+			"freertosconfig.h": "c",
+			"bsp_spi_flash.h": "c",
+			"bsp_lcd.h": "c",
+			"rx_ring_queue.h": "c",
+			"stm32f4xx.h": "c"
+		}
+	}
+}

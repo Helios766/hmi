@@ -1,0 +1,195 @@
+//stm32f429 spi初始化示例
+void SPI1_Init(void)  
+{	 
+  GPIO_InitTypeDef  GPIO_InitStructure;
+  SPI_InitTypeDef   SPI_InitStructure;
+	
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);//使能GPIOB时钟
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);//使能SPI1时钟
+ 
+  //GPIOFB3,4,5初始化设置
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5;//PB3~5复用功能输出	
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;//复用功能
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
+  GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化
+	
+	GPIO_PinAFConfig(GPIOB,GPIO_PinSource3,GPIO_AF_SPI1); //PB3复用为 SPI1
+	GPIO_PinAFConfig(GPIOB,GPIO_PinSource4,GPIO_AF_SPI1); //PB4复用为 SPI1
+	GPIO_PinAFConfig(GPIOB,GPIO_PinSource5,GPIO_AF_SPI1); //PB5复用为 SPI1
+ 
+	//这里只针对SPI口初始化
+	RCC_APB2PeriphResetCmd(RCC_APB2Periph_SPI1,ENABLE);//复位SPI1
+	RCC_APB2PeriphResetCmd(RCC_APB2Periph_SPI1,DISABLE);//停止复位SPI1
+
+	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;  //设置SPI单向或者双向的数据模式:SPI设置为双线双向全双工
+	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;		//设置SPI工作模式:设置为主SPI
+	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;		//设置SPI的数据大小:SPI发送接收8位帧结构
+	SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;		//串行同步时钟的空闲状态为高电平
+	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;	//串行同步时钟的第二个跳变沿（上升或下降）数据被采样
+	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;		//NSS信号由硬件（NSS管脚）还是软件（使用SSI位）管理:内部NSS信号有SSI位控制
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;		//定义波特率预分频的值:波特率预分频值为256
+	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;	//指定数据传输从MSB位还是LSB位开始:数据传输从MSB位开始
+	SPI_InitStructure.SPI_CRCPolynomial = 7;	//CRC值计算的多项式
+	SPI_Init(SPI1, &SPI_InitStructure);  //根据SPI_InitStruct中指定的参数初始化外设SPIx寄存器
+ 
+	SPI_Cmd(SPI1, ENABLE); //使能SPI外设
+
+	//SPI1_ReadWriteByte(0xff);//启动传输	
+
+}  
+
+	
+//SPI1 读写一个字节
+//TxData:要写入的字节
+//返回值:读取到的字节
+u8 SPI1_ReadWriteByte(u8 TxData)
+{		 			 
+  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){
+
+		}//等待发送区空  
+	
+	SPI_I2S_SendData(SPI1, TxData); //通过外设SPIx发送一个byte  数据
+		
+  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET){
+	
+  } //等待接收完一个byte  
+ 
+	return SPI_I2S_ReceiveData(SPI1); //返回通过SPIx最近接收的数据	
+ 		    
+}
+
+//设置spi速率
+void SPI1_SetSpeed(u8 SPI_BaudRatePrescaler)
+{
+  assert_param(IS_SPI_BAUDRATE_PRESCALER(SPI_BaudRatePrescaler));//判断有效性
+	SPI1->CR1&=0XFFC7;//位3-5清零，用来设置波特率
+	SPI1->CR1|=SPI_BaudRatePrescaler;	//设置SPI1速度 
+	SPI_Cmd(SPI1,ENABLE); //使能SPI1
+} 
+
+/*
+*读取函数
+*ReadAddr:读取地址
+*NumByteToRead : 读取字节数
+*pBuffer ：保存数据的地址
+*/
+unsigned  char  r_dat_bat(unsigned long  ReadAddr,unsigned int  NumByteToRead,unsigned char* pBuffer)   
+{ 
+ 	u16 i;   										    
+	SPI1_CS=0;                            //使能器件   
+    SPI1_ReadWriteByte(0x03);         //发送读取命令   
+    SPI1_ReadWriteByte((u8)((ReadAddr)>>16));  //发送24bit地址    
+    SPI1_ReadWriteByte((u8)((ReadAddr)>>8));   
+    SPI1_ReadWriteByte((u8)ReadAddr);  
+	
+    for(i=0;i<NumByteToRead;i++)
+	{ 
+        pBuffer[i]=SPI1_ReadWriteByte(0XFF);   //循环读数  
+    }
+	SPI1_CS=1;
+
+   return  pBuffer[0];	 
+}
+
+//spi读取一个字节的函数
+//ReadAddr : 读取数据的地址
+unsigned char r_dat(unsigned long  ReadAddr)   
+{ 
+ 	u16 i;   		
+    unsigned  char	pBuffer=0;
+	SPI1_CS=0;                            //使能器件   
+    SPI1_ReadWriteByte(0x03);         //发送读取命令   
+    SPI1_ReadWriteByte((u8)((ReadAddr)>>16));  //发送24bit地址    
+    SPI1_ReadWriteByte((u8)((ReadAddr)>>8));   
+    SPI1_ReadWriteByte((u8)ReadAddr);  
+	pBuffer=SPI1_ReadWriteByte(0XFF);   //循环读数  
+    SPI1_CS=1;  
+   	return  pBuffer;		
+}
+
+//注：如何验证r_dat_bat()函数？
+//要验证r_dat_bat()函数，可以根据不同的芯片型号读取0xc0/0xb0/0xa0/0x2c0地址的16位数据，并参考以下提供的数据进行对比。如果没有需要的数据，
+//请向FAE索要对应型号字库芯片该地址的数据，然后对比读出来的数据是否正确。以下是各个字库型号的0xc0/0xb0/0xa0/0x2c0地址16字节数据以及对应
+//型号的地址和地址数据的参考：：
+GT5DL14P1Y：c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT5DL14S2Y：c0h: FC 02 02 FC 00 00 01 02 02 01 00 00 00 04 FE 00
+GT5DL16M2Y：c0h: 21 72 21 73 21 74 21 75 21 76 21 77 21 78 21 79
+GT5DL16S1W：c0h: 00 00 00 00 00 00 0c 60 0c 60 00 00 00 00 00 00
+GT5DL24A1Y80：c0h: 00 00 E0 30 18 18 FE 18 18 10 E0 00 00 00 00 00
+GT5DL24A2W：c0h: 70 88 88 70 88 88 70 00 70 88 88 78 08 10 60 00
+GT5DL28K2W：b0h: CE 00 7B 00 00 00 00 03 00 00 C0 00 C0 00 C0 00
+GT5DL32A3W: c0h: 70 88 88 70 88 88 70 00 70 88 88 78 08 10 60 00
+GT5HL24A2W: 2c0h: A8 AB 00 00 A8 AF 00 00 A8 B3 00 00 A8 B5 00 00
+GT5HL32S3W:  2c0h: A8 AB 00 00 A8 AF 00 00 A8 B3 00 00 A8 B5 00 00
+GT5HL20K2W: c0h: A8 A4 A8 A2 00 00 00 00 00 00 00 00 00 00 00 00
+GT5HL16S2W: 2c0h:A8 B6 00 00 A8 B7 00 00 A8 B8 00 00 00 00 00 00
+GT5SDL24A40: c0h: 00 05 00 00 06 00 11 05 00 00 06 00 22 05 00 00
+GT5SL24K3W40: c0h: 68 B0 01 02 78 B0 01 02 88 B0 01 03 A0 B0 01 02
+GT5SL24K4W: c0h: 70 88 88 70 88 88 70 00 70 88 88 78 08 10 60 00
+GT5SLAD2E1A: c0h: 63 15 00 00 06 00 81 15 00 00 06 00 9F 15 00 00
+GT5SLAD3BFA: c0h: 63 15 00 00 06 00 81 15 00 00 06 00 9E 15 00 00
+GT5SLCD2E1A: c0h: F7 04 00 00 06 00 08 05 00 00 06 00 19 05 00 00
+GT5SLCD2S2A: c0h: 63 15 00 00 06 00 81 15 00 00 06 00 9F 15 00 00
+GT5SLCD2S4A: c0h: 68 B0 01 02 78 B0 01 02 88 B0 01 03 A0 B0 01 02
+GT5SUAD2E: c0h: 7C 49 01 02 8C 49 01 02 9C 49 01 03 B4 49 01 02
+GT5SUAD3BFA: c0h: 63 15 00 00 06 00 81 15 00 00 06 00 9F 15 00 00
+GT5SUCD2E1A: c0h: E7 04 00 00 06 00 08 05 00 00 06 00 19 05 00 00
+XT5YL14U1Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT5YL24A1Y520: c0h: 00 00 E0 30 18 18 FE 18 18 10 E0 00 00 00 00 00
+GT24L24A2Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT20L16J1Y: b0h: 00 00 00 00 00 00 00 03 03 00 00 00 00 00 00 00
+GT20L16P1Y: c0h: 00 00 00 00 00 00 00 00 00 00 16 0E 00 00 00 00
+GT20L16S1Y: c0h: 00 00 00 00 18 18 00 00 00 18 18 00 00 00 00 00
+GT20L24F6Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT21L16S2W: c0h: 00 00 00 00 00 00 0C 60 0C 60 00 00 00 00 00 00
+GT21L16S2Y: c0h: 00 00 00 00 18 18 00 00 00 18 18 00 00 00 00 00
+GT21L16T1W: c0h: 00 00 00 00 00 00 0C 60 0C 60 00 00 00 00 00 00
+GT21L24S1W: c0h: 10 40 00 10 40 00 10 40 00 08 80 00 07 00 00 00
+GT22L16A1Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT22L16A2Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT22L16K1Y40: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT22L16M1Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT22L16U1Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT22L16V2Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT22L24S3W: c0h: 70 88 88 70 88 88 70 00 70 88 88 78 08 10 60 00
+GT22U16A2Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT23L16U2Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT24L16A2Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT24L16K1Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT24L16M1Y20: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT24L24A2W: c0h: 00 00 00 E0 10 08 08 08 10 E0 00 00 00 00 00 00
+GT24L24A2Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT24L32M4W80: c0h: 70 88 88 70 88 88 70 00 70 88 88 78 08 10 60 00
+GT24U24A2Y: c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT30L16M2Y: c0h: 00 40 30 1C 17 12 90 70 38 10 00 00 00 00 00 01
+GT30L16U2W: c0h: 18 00 04 00 0A 00 31 80 C0 60 00 00 7E C0 01 80
+GT30L24A2W: c0h: 0C IC 10 10 10 10 10 1F OF 00 00 00 00 0A 80 C0
+GT30L24A3W: c0h: 18 C0 00 18 C0 00 18 C0 00 0F 80 00 07 00 00 00
+GT30L24M1W: c0h: 10 40 00 10 40 00 10 40 00 08 80 00 07 00 00 00
+GT30L24M1Z: a0h: 40 10 00 40 10 00 40 10 00 80 08 00 00 07 00 00
+GT30L24T3Y：c0h: 00 40 30 1C 17 12 90 70 38 10 00 00 00 00 00 01
+GT30L32A1W80：d0h: 0c 00 00 00 03 00 00 00 01 CO 00 00 00 E0 00 00
+GT30L32M4W80：c0h: 70 88 88 70 88 88 70 00 70 88 88 78 08 10 60 00
+GT30L32S4W：c0h: 08 00 0C 00 18 00 10 80 3F CO 21 80 41 00 02 00
+GT30L32S4Y：c0h: 00 40 30 1C 17 12 90 70 38 10 00 00 00 00 00 01
+GT31L16M1Y80：c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT31L16S2W80：c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT31L24M1W16：c0h: 10 40 00 10 40 00 10 40 00 08 80 00 07 00 00 00
+GT31L24M3W40：c0h: 70 88 88 70 88 88 70 00 70 88 88 78 08 10 60 00
+GT32L24A180：c0h: 10 40 00 10 40 00 10 40 00 08 80 00 07 00 00 00
+GT32L24F0210：c0h: 36 49 49 49 36 00 00 00 06 49 49 29 1E 00 00 00
+GT32L24M1Y80：c0h: 00 00 07 0F 18 30 30 30 18 0F 07 00 00 00 00 00
+GT32L24M0140：c0h: 70 88 88 70 88 88 70 00 70 88 88 78 08 10 60 00
+GT32L32M4W40：c0h: 70 88 88 70 88 88 70 00 70 88 88 78 08 10 60 00
+GT32L32M0180：c0h: 70 88 88 70 88 88 70 00 70 88 88 78 08 10 60 00
+GT32L32S0140：c0h: 70 88 88 70 88 88 70 00 70 88 88 78 08 10 60 00
+GT60L16M2K4：c0h: 00 00 00 00 00 00 00 00 00 18 18 18 30 00 00 00
+GT60M2：c0h: 68 B0 01 02 78 B0 01 02 88 B0 01 03 A0 B0 01 02
+GT61L24M3K4：c0h: 00 00 00 00 00 00 00 00 00 18 18 18 30 00 00 00
+XT21L12S1Y12：c0h: c0 02 C0 01 00 00 00 00 00 00 20 00 20 00 20 00
+XT21L12S1Y40：c0h: c0 02 C0 01 00 00 00 00 00 00 20 00 20 00 20 00
+XT21L20S2W60：2c0h: 00 00 00 00 00 00 00 00 00 00 00 30 30 10 20 00
+XT30L24M1W：c0h: 10 40 00 10 40 00 10 40 00 08 80 00 07 00 00 00
+
